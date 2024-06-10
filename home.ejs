@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.pexels.com/photos/209831/pexels-photo-209831.jpeg?cs=srgb&dl=pexels-pixabay-209831.jpg&fm=jpg'); /* Add your background image URL here */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #weatherBox {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 40px 40px 40px 40px;
+            margin-right:0px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0; /* Remove default margin for h1 */
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding:10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #weatherInfo {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="weatherBox">
+        <h1>Weather</h1>
+        <form id="weatherForm">
+            <label for="city">Enter City:</label>
+            <input type="text" id="city" name="city" required>
+            <button type="submit">Get Weather</button>
+        </form>
+        
+        <div id="weatherInfo"></div>
+    </div>
+
+    <script>
+        document.getElementById('weatherForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var city = document.getElementById('city').value;
+
+            // Make AJAX request to fetch weather data
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/weather?city=' + city, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // On success, update weatherInfo div with received data
+                        var weatherData = JSON.parse(xhr.responseText);
+                        document.getElementById('weatherInfo').innerHTML = `
+                            <h2>Weather in ${city}</h2>
+                            <p>Temperature: ${weatherData.temp} °C</p>
+                            <p>Humidity: ${weatherData.humidity}</p>
+                            <p>Wind Speed: ${weatherData.wind_speed}</p>
+                        `;
+                    } else {
+                        // On failure, display error message
+                        document.getElementById('weatherInfo').innerHTML = '<p>Error fetching weather data</p>';
+                    }
+                }
+            };
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
